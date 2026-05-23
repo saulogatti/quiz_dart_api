@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+
 import '../controller/dto/response/error_dto.dart';
 import '../controller/quiz_controller.dart';
 import '../exceptions/custom_exception.dart';
@@ -12,10 +15,8 @@ class RoutesHandler {
     final router = Router()
       ..get(
         '${QuizController.baseRoute}/questions/generate',
-        (req) => _buildHttpRequest(
-          request: req,
-          apiCallback: _quizController.generateRandomQuestion,
-        ),
+        (req) =>
+            _buildHttpRequest(request: req, apiCallback: _quizController.generateRandomQuestion),
       )
       ..post(
         '${QuizController.baseRoute}/questions/answer',
@@ -41,23 +42,27 @@ class RoutesHandler {
       if (apiAsyncCallback != null) {
         return await apiAsyncCallback.call(request);
       }
+    } on CustomException catch (error) {
+      String errorJson = ErrorDto.fromMap({'message': error.message}).toJson();
+      return Response(
+        error.status,
+        body: errorJson,
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+      );
     } catch (error) {
       /*
       Realiza aqui os tratamentos de erro para evitar implementação em cada endpoint (diminuição de complexidade).
       Evita também o retorno default (internal error) caso alguma tratativa não fosse implementada no endpoint (autenticidade).
       */
-      if (error is CustomException) {
-        String errorJson = ErrorDto.fromMap({'message': error.message}).toJson();
-        return Response(
-          error.status,
-          body: errorJson,
-          headers: {
-            HttpHeaders.contentTypeHeader: 'application/json',
-          },
-        );
-      }
+      return Response.internalServerError(
+        body: jsonEncode({'error': 'Erro interno no servidor $error'}),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+      );
     }
 
-    return Response.internalServerError(body: {'error': 'Erro interno no servidor'});
+    return Response.internalServerError(
+      body: jsonEncode({'error': 'Erro interno no servidor'}),
+      headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    );
   }
 }
