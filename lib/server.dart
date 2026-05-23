@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:quiz_api/src/routes/quiz_router.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
-import 'package:shelf_router/shelf_router.dart';
 
-import 'src/routes/routes_handler.dart';
 
 /// Inicia o servidor HTTP usando o pacote `shelf` e define as rotas usando `RoutesHandler`.
 void startServer() async {
