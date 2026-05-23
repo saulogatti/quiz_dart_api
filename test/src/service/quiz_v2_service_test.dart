@@ -32,6 +32,38 @@ void main() {
         expect(map.containsKey('answer'), isFalse);
       });
 
+      test('retorna opções de múltipla escolha (até 4)', () {
+        final dto = service.generateQuestion(category: 'geography');
+
+        expect(dto.options, isNotEmpty);
+        expect(dto.options.length, lessThanOrEqualTo(4));
+      });
+
+      test('não repete perguntas para o mesmo userEmail', () {
+        const email = 'sem-repetir@test.com';
+        final seenIds = <int>{};
+
+        // Esgota todas as perguntas — 10 por categoria
+        for (var i = 0; i < 10; i++) {
+          final dto = service.generateQuestion(category: 'geography', userEmail: email);
+          expect(seenIds.contains(dto.id), isFalse,
+              reason: 'pergunta id=${dto.id} foi repetida na iteração $i');
+          seenIds.add(dto.id);
+        }
+        expect(seenIds.length, equals(10));
+      });
+
+      test('lança NotFoundExcpetion quando o usuário esgotou a categoria', () {
+        const email = 'esgotou@test.com';
+        for (var i = 0; i < 10; i++) {
+          service.generateQuestion(category: 'geography', userEmail: email);
+        }
+        expect(
+          () => service.generateQuestion(category: 'geography', userEmail: email),
+          throwsA(isA<NotFoundExcpetion>()),
+        );
+      });
+
       test('lança CategoryNotFoundException para categoria inexistente', () {
         expect(
           () => service.generateQuestion(category: 'categoriaInexistente'),
@@ -157,6 +189,29 @@ void main() {
         );
 
         expect(result.correct, isTrue);
+      });
+
+      test('modo mistério (revealResult=false) omite todos os campos de veredito', () {
+        final result = service.answerQuestion(
+          id: 2,
+          category: 'geography',
+          userEmail: 'misterio@test.com',
+          answerResp: 'Vaticano',
+          revealResult: false,
+        );
+
+        expect(result.correct, isNull);
+        expect(result.pointsEarned, isNull);
+        expect(result.totalScore, isNull);
+        expect(result.correctCount, isNull);
+        expect(result.wrongCount, isNull);
+        // totalAnswered é exposto para o cliente saber que registrou
+        expect(result.totalAnswered, equals(1));
+
+        // score é mantido por baixo dos panos — confirmado via getUserResult
+        final reveal = service.getUserResult(userEmail: 'misterio@test.com');
+        expect(reveal.totalScore, greaterThan(0));
+        expect(reveal.correctCount, equals(1));
       });
     });
 

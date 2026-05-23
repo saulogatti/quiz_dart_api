@@ -1,15 +1,15 @@
 {
   "category": "historyFashion",
   "questions": [
-    { "id": 1, "question": "Quando o metrô de Londres foi inaugurado?", "answer": "1863", "points": 15 },
-    { "id": 2, "question": "Quem inventou o WWW (World Wide Web)?", "answer": "tim berners-lee", "points": 15 },
-    { "id": 3, "question": "Quem inventou o icônico Little Black Dress?", "answer": "coco chanel", "points": 10 },
-    { "id": 4, "question": "O que aconteceu em 20 de Julho de 1969?", "answer": "apollo 11 pousou na lua", "points": 10 },
-    { "id": 5, "question": "Quando foi a primeira publicação da Vogue: 1892, 1960 ou 2000?", "answer": "1892", "points": 15 },
-    { "id": 6, "question": "Qual foi o primeiro país a conceder o voto feminino?", "answer": "nova zelândia", "points": 20 },
-    { "id": 7, "question": "Em que ano caiu o Muro de Berlim?", "answer": "1989", "points": 10 },
-    { "id": 8, "question": "Quem foi o primeiro presidente dos Estados Unidos?", "answer": "george washington", "points": 10 },
-    { "id": 9, "question": "Em que ano começou a Primeira Guerra Mundial?", "answer": "1914", "points": 10 },
-    { "id": 10, "question": "Qual marca de moda criou o tênis Air Jordan?", "answer": "nike", "points": 10 }
+    { "id": 1, "question": "Quando o metrô de Londres foi inaugurado?", "options": ["1850", "1863", "1875", "1890"], "answer": "1863", "points": 15 },
+    { "id": 2, "question": "Quem inventou o WWW (World Wide Web)?", "options": ["Bill Gates", "Steve Jobs", "Tim Berners-Lee", "Vint Cerf"], "answer": "Tim Berners-Lee", "points": 15 },
+    { "id": 3, "question": "Quem inventou o icônico Little Black Dress?", "options": ["Coco Chanel", "Christian Dior", "Yves Saint Laurent", "Givenchy"], "answer": "Coco Chanel", "points": 10 },
+    { "id": 4, "question": "O que aconteceu em 20 de Julho de 1969?", "options": ["Queda do Muro de Berlim", "Apollo 11 pousou na Lua", "Fim da Segunda Guerra", "Lançamento do Sputnik"], "answer": "Apollo 11 pousou na Lua", "points": 10 },
+    { "id": 5, "question": "Quando foi a primeira publicação da Vogue?", "options": ["1892", "1920", "1960", "2000"], "answer": "1892", "points": 15 },
+    { "id": 6, "question": "Qual foi o primeiro país a conceder o voto feminino?", "options": ["Estados Unidos", "Reino Unido", "Nova Zelândia", "Suíça"], "answer": "Nova Zelândia", "points": 20 },
+    { "id": 7, "question": "Em que ano caiu o Muro de Berlim?", "options": ["1985", "1989", "1991", "1995"], "answer": "1989", "points": 10 },
+    { "id": 8, "question": "Quem foi o primeiro presidente dos Estados Unidos?", "options": ["Thomas Jefferson", "George Washington", "John Adams", "Benjamin Franklin"], "answer": "George Washington", "points": 10 },
+    { "id": 9, "question": "Em que ano começou a Primeira Guerra Mundial?", "options": ["1912", "1914", "1916", "1918"], "answer": "1914", "points": 10 },
+    { "id": 10, "question": "Qual marca de moda criou o tênis Air Jordan?", "options": ["Adidas", "Puma", "Nike", "Reebok"], "answer": "Nike", "points": 10 }
   ]
 }

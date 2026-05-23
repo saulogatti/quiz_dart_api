@@ -40,6 +40,7 @@ class QuizV2Controller {
         category: dto.category,
         userEmail: dto.userEmail,
         answerResp: dto.answerResp,
+        revealResult: dto.revealResult,
       );
       return Response.ok(
         result.toJson(),
@@ -59,6 +60,7 @@ class QuizV2Controller {
   /// Retorna uma pergunta aleatória da categoria informada, sem expor a resposta.
   Response generateQuestion(Request request) {
     final category = request.url.queryParameters['category'];
+    final userEmail = request.url.queryParameters['userEmail'];
 
     if (category == null || category.isEmpty) {
       return Response(
@@ -69,7 +71,10 @@ class QuizV2Controller {
     }
 
     try {
-      final dto = _service.generateQuestion(category: category);
+      final dto = _service.generateQuestion(
+        category: category,
+        userEmail: (userEmail != null && userEmail.isNotEmpty) ? userEmail : null,
+      );
       return Response.ok(
         dto.toJson(),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},

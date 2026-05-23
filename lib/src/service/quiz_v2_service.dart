@@ -27,12 +27,14 @@ class QuizV2Service {
 
   /// Verifica a resposta do usuário e atualiza o score acumulado.
   ///
-  /// Retorna [AnswerV2ResultDto] com resultado parcial (acerto/erro + score atual).
+  /// Quando [revealResult] é `false`, o DTO retornado omite `correct` e
+  /// `pointsEarned` — o score acumulado continua sendo atualizado normalmente.
   AnswerV2ResultDto answerQuestion({
     required int id,
     required String category,
     required String userEmail,
     required String answerResp,
+    bool revealResult = true,
   }) {
     final questions = _loadCategory(category);
 
@@ -46,6 +48,7 @@ class QuizV2Service {
     final userScore = _userScores.putIfAbsent(userEmail, () => UserScoreModel(email: userEmail));
 
     final answeredIds = userScore.answeredQuestionIds.putIfAbsent(category, () => {});
+    userScore.seenQuestionIds.putIfAbsent(category, () => {}).add(id);
     final alreadyAnswered = answeredIds.contains(id);
 
     final bool correct = question.answer.toLowerCase().trim() == answerResp.toLowerCase().trim();
@@ -62,30 +65,57 @@ class QuizV2Service {
     }
 
     return AnswerV2ResultDto(
-      correct: correct,
-      pointsEarned: pointsEarned,
-      totalScore: userScore.totalScore,
+      correct: revealResult ? correct : null,
+      pointsEarned: revealResult ? pointsEarned : null,
+      totalScore: revealResult ? userScore.totalScore : null,
       totalAnswered: userScore.totalAnswered,
-      correctCount: userScore.correctCount,
-      wrongCount: userScore.wrongCount,
+      correctCount: revealResult ? userScore.correctCount : null,
+      wrongCount: revealResult ? userScore.wrongCount : null,
     );
   }
 
-  /// Gera uma pergunta aleatória da [category] sem expor a resposta.
-  QuestionV2Dto generateQuestion({required String category}) {
+  /// Gera uma pergunta aleatória da [category] com as alternativas embaralhadas,
+  /// pulando perguntas que [userEmail] já viu nesta sessão. Quando [userEmail]
+  /// não é informado, opera sem filtro (modo anônimo).
+  ///
+  /// Lança [NotFoundExcpetion] se o usuário já esgotou todas as perguntas da
+  /// categoria — o cliente deve tratar como "fim da categoria".
+  QuestionV2Dto generateQuestion({required String category, String? userEmail}) {
     final questions = _loadCategory(category);
 
     if (questions.isEmpty) {
       throw NotFoundExcpetion(message: 'Nenhuma pergunta encontrada para a categoria "$category".');
     }
 
-    final index = Random().nextInt(questions.length);
-    final question = questions[index];
+    final seen = (userEmail != null)
+        ? _userScores
+            .putIfAbsent(userEmail, () => UserScoreModel(email: userEmail))
+            .seenQuestionIds
+            .putIfAbsent(category, () => {})
+        : null;
+
+    final pool = (seen == null)
+        ? questions
+        : questions.where((q) => !seen.contains(q.id)).toList();
+
+    if (pool.isEmpty) {
+      throw NotFoundExcpetion(
+        message: 'Sem mais perguntas na categoria "$category" — você já respondeu '
+            'todas as ${questions.length} disponíveis.',
+      );
+    }
+
+    final random = Random();
+    final question = pool[random.nextInt(pool.length)];
+    seen?.add(question.id);
+
+    final shuffled = [...question.options]..shuffle(random);
 
     return QuestionV2Dto(
       id: question.id,
       question: question.question,
       category: category,
+      options: shuffled,
       points: question.points,
     );
   }

@@ -37,6 +37,8 @@ void main() {
         expect(body['question'], isA<String>());
         expect(body['category'], equals('geography'));
         expect(body['points'], isA<int>());
+        expect(body['options'], isA<List<dynamic>>());
+        expect((body['options'] as List).length, lessThanOrEqualTo(4));
         expect(body.containsKey('answer'), isFalse);
       });
 
@@ -136,6 +138,28 @@ void main() {
         );
 
         expect(response.statusCode, equals(404));
+      });
+
+      test('revealResult=false não inclui correct nem pointsEarned no body', () async {
+        final response = await controller.answerQuestion(
+          _post('/api/v2/questions/answer', {
+            'id': 2,
+            'category': 'geography',
+            'userEmail': 'ctrl_misterio@test.com',
+            'answerResp': 'Vaticano',
+            'revealResult': false,
+          }),
+        );
+
+        expect(response.statusCode, equals(200));
+
+        final body = jsonDecode(await response.readAsString()) as Map<String, dynamic>;
+        expect(body.containsKey('correct'), isFalse);
+        expect(body.containsKey('pointsEarned'), isFalse);
+        expect(body.containsKey('totalScore'), isFalse);
+        expect(body.containsKey('correctCount'), isFalse);
+        expect(body.containsKey('wrongCount'), isFalse);
+        expect(body['totalAnswered'], equals(1));
       });
 
       test('retorna 404 para categoria inexistente', () async {
