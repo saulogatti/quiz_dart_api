@@ -4,14 +4,18 @@ import '../model/user_model.dart';
 
 class UserService {
   UserModel findUserByEmail(String email) {
-    Map<String, dynamic>? userMap = users.where((element) => element['email'] == email).toList().firstOrNull;
+    Map<String, dynamic>? userMap = users
+        .where((element) => element['email'] == email)
+        .toList()
+        .firstOrNull;
     if (userMap == null || userMap.isEmpty) {
       throw NotFoundExcpetion(
-          message:
-              'Usuário com e-mail $email não foi encontrado. Certifique-se que o email informado esteja correto.');
+        message:
+            'Usuário com e-mail $email não foi encontrado. Certifique-se que o email informado esteja correto.',
+      );
     }
 
-    UserModel userModel = UserModel.fromMap(userMap);
+    UserModel userModel = UserModel.fromJson(userMap);
     return userModel;
   }
 
