@@ -1,4 +1,5 @@
 A server app built using [Shelf](https://pub.dev/packages/shelf),
+route requests with [Shelf Router](https://pub.dev/packages/shelf_router), and  [Shelf Router Generator](https://pub.dev/packages/shelf_router_generator). It is also
 configured to enable running with [Docker](https://www.docker.com/).
 
 This sample code handles HTTP GET requests to `/` and `/echo/<message>`

@@ -17,3 +17,4 @@ dev_dependencies:
   test: ^1.31.1
   build_runner: ^2.15.0
   json_serializable: ^6.14.0
+  shelf_router_generator: ^1.1.4

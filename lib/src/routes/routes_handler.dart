@@ -14,12 +14,12 @@ class RoutesHandler {
   static Router buildRouters() {
     final router = Router()
       ..get(
-        '${QuizController.baseRoute}/questions/generate',
+        '/questions/generate',
         (req) =>
             _buildHttpRequest(request: req, apiCallback: _quizController.generateRandomQuestion),
       )
       ..post(
-        '${QuizController.baseRoute}/questions/answer',
+        '/questions/answer',
         (req) => _buildHttpRequest(
           request: req,
           apiAsyncCallback: _quizController.answerQuestionByEmail,
