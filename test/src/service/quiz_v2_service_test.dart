@@ -89,7 +89,7 @@ void main() {
           id: 2,
           category: 'geography',
           userEmail: 'acerto@test.com',
-          answerResp: 'vaticano',
+          answerResp: 'Vaticano',
         );
 
         expect(result.correct, isTrue);
@@ -121,16 +121,16 @@ void main() {
           id: 2,
           category: 'geography',
           userEmail: email,
-          answerResp: 'vaticano',
+          answerResp: 'Vaticano',
         );
         final r2 = service.answerQuestion(
           id: 3,
           category: 'geography',
           userEmail: email,
-          answerResp: 'ottawa',
+          answerResp: 'Ottawa',
         );
 
-        expect(r2.totalScore, equals(r1.pointsEarned + r2.pointsEarned));
+        expect(r2.totalScore, equals(r1.pointsEarned! + r2.pointsEarned!));
         expect(r2.correctCount, equals(2));
         expect(r2.totalAnswered, equals(2));
       });
@@ -142,13 +142,13 @@ void main() {
           id: 2,
           category: 'geography',
           userEmail: email,
-          answerResp: 'vaticano',
+          answerResp: 'Vaticano',
         );
         final r2 = service.answerQuestion(
           id: 2,
           category: 'geography',
           userEmail: email,
-          answerResp: 'vaticano',
+          answerResp: 'Vaticano',
         );
 
         expect(r2.totalScore, equals(r1.totalScore));
@@ -236,7 +236,7 @@ void main() {
           id: 2,
           category: 'geography',
           userEmail: email,
-          answerResp: 'vaticano',
+          answerResp: 'Vaticano',
         );
         service.answerQuestion(
           id: 3,

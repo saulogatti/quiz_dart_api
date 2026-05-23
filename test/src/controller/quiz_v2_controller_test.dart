@@ -80,7 +80,7 @@ void main() {
             'id': 2,
             'category': 'geography',
             'userEmail': 'ctrl_acerto@test.com',
-            'answerResp': 'vaticano',
+            'answerResp': 'Vaticano',
           }),
         );
 
@@ -203,7 +203,7 @@ void main() {
             'id': 3,
             'category': 'geography',
             'userEmail': email,
-            'answerResp': 'ottawa',
+            'answerResp': 'Ottawa',
           }),
         );
         await controller.answerQuestion(
