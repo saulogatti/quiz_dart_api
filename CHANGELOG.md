@@ -11,6 +11,7 @@
 - Updated `QuizCategoryModel` to include JSON serialization support and added a new field for the list of questions in the category.
 - Updated documentation for all models and services to reflect the changes made in this version.
 
+
 ## 1.1.0
 
 - Updated dependencies to their latest versions.

@@ -1,0 +1,15 @@
+{
+  "category": "geography",
+  "questions": [
+    { "id": 1, "question": "Qual país tem mais ilhas no mundo?", "answer": "suécia", "points": 15 },
+    { "id": 2, "question": "Qual é o menor país do mundo?", "answer": "vaticano", "points": 10 },
+    { "id": 3, "question": "Qual a capital do Canadá?", "answer": "ottawa", "points": 10 },
+    { "id": 4, "question": "Qual é a maior cadeia de montanhas do mundo?", "answer": "andes", "points": 15 },
+    { "id": 5, "question": "Onde é o lugar natural mais baixo do planeta Terra?", "answer": "fossa das marianas", "points": 15 },
+    { "id": 6, "question": "Qual é o rio mais longo do mundo?", "answer": "rio nilo", "points": 10 },
+    { "id": 7, "question": "Qual é a gíria usada pelos locais para se referir à cidade de Nova York?", "answer": "gotham", "points": 20 },
+    { "id": 8, "question": "Qual é a capital da Austrália?", "answer": "canberra", "points": 15 },
+    { "id": 9, "question": "Qual é o país mais populoso do mundo?", "answer": "índia", "points": 10 },
+    { "id": 10, "question": "Em qual continente fica a Amazônia?", "answer": "américa do sul", "points": 10 }
+  ]
+}

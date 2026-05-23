@@ -1,0 +1,15 @@
+{
+  "category": "generalKnowledge",
+  "questions": [
+    { "id": 1, "question": "Quantos fusos horários existem na Rússia?", "answer": "11", "points": 10 },
+    { "id": 2, "question": "Qual é a flor nacional do Japão?", "answer": "flor de cerejeira", "points": 10 },
+    { "id": 3, "question": "Quantas tiras há na bandeira dos Estados Unidos?", "answer": "13", "points": 10 },
+    { "id": 4, "question": "Qual é o animal nacional da Austrália?", "answer": "canguru vermelho", "points": 10 },
+    { "id": 5, "question": "Quantos dias são necessários para a Terra orbitar o sol?", "answer": "365", "points": 10 },
+    { "id": 6, "question": "Qual dos impérios a seguir não possui um idioma escrito: Inca, Azteca, Egípcio ou Romano?", "answer": "inca", "points": 15 },
+    { "id": 7, "question": "Até 1923, como era chamada a cidade turca de Istambul?", "answer": "constantinopla", "points": 15 },
+    { "id": 8, "question": "Qual é o maior oceano do mundo?", "answer": "oceano pacífico", "points": 10 },
+    { "id": 9, "question": "Quantos planetas existem no sistema solar?", "answer": "8", "points": 10 },
+    { "id": 10, "question": "Em que continente fica o Egito?", "answer": "áfrica", "points": 10 }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "popCultureMusic",
+  "questions": [
+    { "id": 1, "question": "De onde é Billie Eilish?", "answer": "los angeles", "points": 10 },
+    { "id": 2, "question": "De qual cidade vieram os Beatles?", "answer": "liverpool", "points": 10 },
+    { "id": 3, "question": "Qual é a música mais tocada no Spotify de todos os tempos?", "answer": "blinding lights", "points": 15 },
+    { "id": 4, "question": "Quantas teclas há em um piano clássico?", "answer": "88", "points": 10 },
+    { "id": 5, "question": "Qual famosa banda americana era chamada originalmente de 'Kara's Flowers'?", "answer": "maroon 5", "points": 15 },
+    { "id": 6, "question": "Qual artista tem o álbum mais vendido de todos os tempos?", "answer": "michael jackson", "points": 15 },
+    { "id": 7, "question": "Em que ano o iPhone foi lançado pela Apple?", "answer": "2007", "points": 10 },
+    { "id": 8, "question": "Qual é a série de livros mais vendida do século 21?", "answer": "harry potter", "points": 10 },
+    { "id": 9, "question": "Qual ator interpreta o Homem de Ferro no MCU?", "answer": "robert downey jr", "points": 10 },
+    { "id": 10, "question": "Qual é o nome real de Lady Gaga?", "answer": "stefani germanotta", "points": 15 }
+  ]
+}

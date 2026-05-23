@@ -195,6 +195,6 @@ class QuestionModelMock extends QuestionModel {
   }) : super(points: 10);
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'category': category, 'question': question, 'answer': answer};
+    return {'id': id, 'category': category, 'question': question, 'answer': answer, 'points': points};
   }
 }
