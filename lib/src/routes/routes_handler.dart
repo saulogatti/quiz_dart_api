@@ -8,9 +8,14 @@ import '../controller/dto/response/error_dto.dart';
 import '../controller/quiz_controller.dart';
 import '../exceptions/custom_exception.dart';
 
+/// Configura e expõe as rotas da API V1.
+///
+/// Todos os handlers passam pelo wrapper [_buildHttpRequest], que captura
+/// [CustomException] e converte em respostas JSON com o status HTTP adequado.
 class RoutesHandler {
   static final QuizController _quizController = QuizController();
 
+  /// Constrói e retorna o [Router] com todas as rotas da API V1.
   static Router buildRouters() {
     final router = Router()
       ..get(

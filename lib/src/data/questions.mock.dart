@@ -1,5 +1,9 @@
 import '../model/question_model.dart';
 
+/// Lista de perguntas mock da API V1, mantida em memória.
+///
+/// O estado é mutável em runtime (respostas são registradas por usuário) e
+/// perdido ao reiniciar o servidor.
 final List<Map<String, dynamic>> questions = [
   QuestionModelMock(
     id: 1,
@@ -195,6 +199,12 @@ class QuestionModelMock extends QuestionModel {
   }) : super(points: 10);
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'category': category, 'question': question, 'answer': answer, 'points': points};
+    return {
+      'id': id,
+      'category': category,
+      'question': question,
+      'answer': answer,
+      'points': points,
+    };
   }
 }

@@ -9,9 +9,19 @@ import '../model/question_model.dart';
 import '../model/user_model.dart';
 import 'user_service.dart';
 
+/// Serviço de negócio da API V1 do quiz.
+///
+/// Opera sobre dados mock em memória (lista [questions]) e delega operações
+/// de usuário ao [UserService]. Todo o estado é volátil.
 class QuizService {
   final UserService _userService = UserService();
 
+  /// Verifica se a resposta [answerResp] para a pergunta de [id] está correta.
+  ///
+  /// Lança [NotFoundExcpetion] se a pergunta não existir, [AnsweredQuestionException]
+  /// se o usuário [userEmail] já respondeu corretamente, e [InvalidAnswerException]
+  /// se a resposta estiver errada. Retorna `true` ao acertar e registra a
+  /// pergunta na lista de respondidas do usuário.
   bool answerQuestion(int id, String answerResp, String userEmail) {
     Map<String, dynamic>? question = questions
         .where((element) => element['id'] == id)
@@ -44,6 +54,10 @@ class QuizService {
     return answerIsCorrect;
   }
 
+  /// Gera e retorna um [QuestionDto] aleatório.
+  ///
+  /// Quando [category] é informado, filtra as perguntas pela categoria correspondente.
+  /// Lança [NotFoundExcpetion] se não houver perguntas disponíveis.
   QuestionDto generateRandomQuestion({String? category}) {
     List<Map<String, dynamic>> localQuestions = [];
     localQuestions.addAll(questions);

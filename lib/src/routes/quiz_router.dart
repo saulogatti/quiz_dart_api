@@ -5,6 +5,10 @@ import 'package:shelf_router/shelf_router.dart';
 
 part 'quiz_router.g.dart';
 
+/// Roteador raiz da aplicação.
+///
+/// Monta a API V1 em `$_basePath/v1` via [RoutesHandler] e a API V2 em
+/// `$_basePath/v2` via [QuizModule]. Gerado parcialmente via `shelf_router_generator`.
 class QuizRouter {
   static const String _basePath = '/api';
 
