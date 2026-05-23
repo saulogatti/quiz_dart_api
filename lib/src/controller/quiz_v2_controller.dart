@@ -15,6 +15,45 @@ import 'dto/v2/answer_v2_request_dto.dart';
 class QuizV2Controller {
   final QuizV2Service _service = QuizV2Service();
 
+  /// `POST /api/v2/questions/answer`
+  ///
+  /// Verifica a resposta e retorna o resultado parcial (score acumulado).
+  Future<Response> answerQuestion(Request request) async {
+    final body = await request.readAsString();
+
+    AnswerV2RequestDto dto;
+    try {
+      dto = AnswerV2RequestDto.fromJson(jsonDecode(body) as Map<String, dynamic>);
+    } catch (_) {
+      return Response(
+        400,
+        body: jsonEncode({
+          'message': 'Body inválido. Campos obrigatórios: id, category, userEmail, answerResp.',
+        }),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+      );
+    }
+
+    try {
+      final result = _service.answerQuestion(
+        id: dto.id,
+        category: dto.category,
+        userEmail: dto.userEmail,
+        answerResp: dto.answerResp,
+      );
+      return Response.ok(
+        result.toJson(),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+      );
+    } on CustomException catch (e) {
+      return Response(
+        e.status,
+        body: ErrorDto.fromMap({'message': e.message}).toJson(),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+      );
+    }
+  }
+
   /// `GET /api/v2/questions/generate?category=X`
   ///
   /// Retorna uma pergunta aleatória da categoria informada, sem expor a resposta.
@@ -31,41 +70,10 @@ class QuizV2Controller {
 
     try {
       final dto = _service.generateQuestion(category: category);
-      return Response.ok(dto.toJson(), headers: {HttpHeaders.contentTypeHeader: 'application/json'});
-    } on CustomException catch (e) {
-      return Response(
-        e.status,
-        body: ErrorDto.fromMap({'message': e.message}).toJson(),
+      return Response.ok(
+        dto.toJson(),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
       );
-    }
-  }
-
-  /// `POST /api/v2/questions/answer`
-  ///
-  /// Verifica a resposta e retorna o resultado parcial (score acumulado).
-  Future<Response> answerQuestion(Request request) async {
-    final body = await request.readAsString();
-
-    AnswerV2RequestDto dto;
-    try {
-      dto = AnswerV2RequestDto.fromJson(jsonDecode(body) as Map<String, dynamic>);
-    } catch (_) {
-      return Response(
-        400,
-        body: jsonEncode({'message': 'Body inválido. Campos obrigatórios: id, category, userEmail, answerResp.'}),
-        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-      );
-    }
-
-    try {
-      final result = _service.answerQuestion(
-        id: dto.id,
-        category: dto.category,
-        userEmail: dto.userEmail,
-        answerResp: dto.answerResp,
-      );
-      return Response.ok(result.toJson(), headers: {HttpHeaders.contentTypeHeader: 'application/json'});
     } on CustomException catch (e) {
       return Response(
         e.status,
@@ -90,6 +98,9 @@ class QuizV2Controller {
     }
 
     final result = _service.getUserResult(userEmail: userEmail);
-    return Response.ok(result.toJson(), headers: {HttpHeaders.contentTypeHeader: 'application/json'});
+    return Response.ok(
+      result.toJson(),
+      headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    );
   }
 }

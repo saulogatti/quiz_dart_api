@@ -16,54 +16,14 @@ import '../model/v2/user_score_model.dart';
 /// mantém um cache em memória e controla o score acumulado dos usuários
 /// via [UserScoreModel]. Todo o estado é volátil e perdido ao reiniciar o servidor.
 class QuizV2Service {
+  /// Diretório base dos arquivos JSON de dados V2.
+  static const String _dataDir = 'lib/data/v2';
+
   /// Score acumulado por email de usuário, mantido em memória.
   final Map<String, UserScoreModel> _userScores = {};
 
   /// Cache de perguntas carregadas por categoria.
   final Map<String, List<QuestionV2Model>> _categoryCache = {};
-
-  /// Diretório base dos arquivos JSON de dados V2.
-  static const String _dataDir = 'lib/data/v2';
-
-  List<QuestionV2Model> _loadCategory(String category) {
-    if (_categoryCache.containsKey(category)) {
-      return _categoryCache[category]!;
-    }
-
-    final file = File('$_dataDir/$category.json');
-    if (!file.existsSync()) {
-      throw CategoryNotFoundException(category: category);
-    }
-
-    final raw = file.readAsStringSync();
-    final decoded = jsonDecode(raw) as Map<String, dynamic>;
-    final questionsJson = decoded['questions'] as List<dynamic>;
-
-    final questions =
-        questionsJson.map((q) => QuestionV2Model.fromJson(q as Map<String, dynamic>)).toList();
-
-    _categoryCache[category] = questions;
-    return questions;
-  }
-
-  /// Gera uma pergunta aleatória da [category] sem expor a resposta.
-  QuestionV2Dto generateQuestion({required String category}) {
-    final questions = _loadCategory(category);
-
-    if (questions.isEmpty) {
-      throw NotFoundExcpetion(message: 'Nenhuma pergunta encontrada para a categoria "$category".');
-    }
-
-    final index = Random().nextInt(questions.length);
-    final question = questions[index];
-
-    return QuestionV2Dto(
-      id: question.id,
-      question: question.question,
-      category: category,
-      points: question.points,
-    );
-  }
 
   /// Verifica a resposta do usuário e atualiza o score acumulado.
   ///
@@ -83,10 +43,7 @@ class QuizV2Service {
       );
     }
 
-    final userScore = _userScores.putIfAbsent(
-      userEmail,
-      () => UserScoreModel(email: userEmail),
-    );
+    final userScore = _userScores.putIfAbsent(userEmail, () => UserScoreModel(email: userEmail));
 
     final answeredIds = userScore.answeredQuestionIds.putIfAbsent(category, () => {});
     final alreadyAnswered = answeredIds.contains(id);
@@ -114,6 +71,25 @@ class QuizV2Service {
     );
   }
 
+  /// Gera uma pergunta aleatória da [category] sem expor a resposta.
+  QuestionV2Dto generateQuestion({required String category}) {
+    final questions = _loadCategory(category);
+
+    if (questions.isEmpty) {
+      throw NotFoundExcpetion(message: 'Nenhuma pergunta encontrada para a categoria "$category".');
+    }
+
+    final index = Random().nextInt(questions.length);
+    final question = questions[index];
+
+    return QuestionV2Dto(
+      id: question.id,
+      question: question.question,
+      category: category,
+      points: question.points,
+    );
+  }
+
   /// Retorna o resultado final acumulado do usuário.
   QuizResultDto getUserResult({required String userEmail}) {
     final userScore = _userScores[userEmail];
@@ -135,5 +111,27 @@ class QuizV2Service {
       correctCount: userScore.correctCount,
       wrongCount: userScore.wrongCount,
     );
+  }
+
+  List<QuestionV2Model> _loadCategory(String category) {
+    if (_categoryCache.containsKey(category)) {
+      return _categoryCache[category]!;
+    }
+
+    final file = File('$_dataDir/$category.json');
+    if (!file.existsSync()) {
+      throw CategoryNotFoundException(category: category);
+    }
+
+    final raw = file.readAsStringSync();
+    final decoded = jsonDecode(raw) as Map<String, dynamic>;
+    final questionsJson = decoded['questions'] as List<dynamic>;
+
+    final questions = questionsJson
+        .map((q) => QuestionV2Model.fromJson(q as Map<String, dynamic>))
+        .toList();
+
+    _categoryCache[category] = questions;
+    return questions;
   }
 }
