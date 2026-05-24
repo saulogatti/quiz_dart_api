@@ -81,18 +81,24 @@ class QuizV2Service {
   /// Lança [NotFoundExcpetion] se o usuário já esgotou todas as perguntas da
   /// categoria — o cliente deve tratar como "fim da categoria".
   QuestionV2Dto generateQuestion({required String category, String? userEmail}) {
-    final questions = _loadCategory(category);
-
-    if (questions.isEmpty) {
-      throw NotFoundExcpetion(message: 'Nenhuma pergunta encontrada para a categoria "$category".');
-    }
-
     final seen = (userEmail != null)
         ? _userScores
             .putIfAbsent(userEmail, () => UserScoreModel(email: userEmail))
             .seenQuestionIds
             .putIfAbsent(category, () => {})
         : null;
+
+    if (seen != null && seen.length >= 100) {
+      throw NotFoundExcpetion(
+        message: 'Sem mais perguntas na categoria "$category" — você já atingiu o limite de 100 perguntas.',
+      );
+    }
+
+    final questions = _loadCategory(category);
+
+    if (questions.isEmpty) {
+      throw NotFoundExcpetion(message: 'Nenhuma pergunta encontrada para a categoria "$category".');
+    }
 
     final pool = (seen == null)
         ? questions
@@ -146,6 +152,44 @@ class QuizV2Service {
   List<QuestionV2Model> _loadCategory(String category) {
     if (_categoryCache.containsKey(category)) {
       return _categoryCache[category]!;
+    }
+
+    if (category == 'generalKnowledge') {
+      final List<QuestionV2Model> mixedQuestions = [];
+      final List<String> sourceCategories = [
+        'geography',
+        'historyFashion',
+        'popCultureMusic',
+        'generalKnowledge',
+      ];
+
+      for (int i = 0; i < sourceCategories.length; i++) {
+        final currentCat = sourceCategories[i];
+        final file = File('$_dataDir/$currentCat.json');
+        if (!file.existsSync()) continue;
+
+        final raw = file.readAsStringSync();
+        final decoded = jsonDecode(raw) as Map<String, dynamic>;
+        final questionsJson = decoded['questions'] as List<dynamic>;
+
+        final questions = questionsJson
+            .map((q) => QuestionV2Model.fromJson(q as Map<String, dynamic>))
+            .toList();
+
+        final prefix = (i + 1) * 1000;
+        for (final q in questions) {
+          mixedQuestions.add(QuestionV2Model(
+            id: prefix + q.id,
+            question: q.question,
+            options: q.options,
+            answer: q.answer,
+            points: q.points,
+          ));
+        }
+      }
+
+      _categoryCache[category] = mixedQuestions;
+      return mixedQuestions;
     }
 
     final file = File('$_dataDir/$category.json');

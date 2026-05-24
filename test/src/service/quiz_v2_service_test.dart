@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:quiz_api/src/exceptions/category_not_found_exception.dart';
 import 'package:quiz_api/src/exceptions/not_found_exceptions.dart';
 import 'package:quiz_api/src/service/quiz_v2_service.dart';
@@ -252,6 +255,66 @@ void main() {
         expect(result.correctCount, equals(1));
         expect(result.wrongCount, equals(1));
         expect(result.totalScore, greaterThan(0));
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // generalKnowledge mixing & 100-limit
+    // -------------------------------------------------------------------------
+    group('generalKnowledge mixing and 100-limit', () {
+      test('generalKnowledge mistura perguntas de outras categorias com IDs virtuais', () {
+        final dto = service.generateQuestion(category: 'generalKnowledge');
+        expect(dto.id, greaterThanOrEqualTo(1000)); // IDs virtuais começam acima de 1000
+
+        // Tenta gerar várias perguntas e garante que os IDs pertençam a diferentes faixas
+        final categoriesSeen = <int>{};
+        for (var i = 0; i < 25; i++) {
+          try {
+            final q = service.generateQuestion(category: 'generalKnowledge', userEmail: 'mix@test.com');
+            final categoryRange = q.id ~/ 1000;
+            categoriesSeen.add(categoryRange);
+          } catch (_) {
+            break;
+          }
+        }
+        // Deve ter visto perguntas de múltiplas categorias (faixas de IDs diferentes)
+        expect(categoriesSeen.length, greaterThan(1));
+      });
+
+      test('limite de 100 perguntas lança erro após atingido', () {
+        // Vamos criar um arquivo de teste com 105 perguntas para validar o limite
+        final file = File('lib/data/v2/test100.json');
+        final questionsList = List.generate(105, (i) => {
+          'id': i + 1,
+          'question': 'Questão ${i + 1}',
+          'options': ['A', 'B'],
+          'answer': 'A',
+          'points': 10
+        });
+        file.writeAsStringSync(jsonEncode({
+          'category': 'test100',
+          'questions': questionsList,
+        }));
+
+        try {
+          final userEmail = 'limite100@test.com';
+          // Gera 100 perguntas com sucesso
+          for (var i = 0; i < 100; i++) {
+            final q = service.generateQuestion(category: 'test100', userEmail: userEmail);
+            expect(q.id, isNotNull);
+          }
+
+          // A 101ª geração deve estourar o limite de 100
+          expect(
+            () => service.generateQuestion(category: 'test100', userEmail: userEmail),
+            throwsA(isA<NotFoundExcpetion>()),
+          );
+        } finally {
+          // Garante a limpeza do arquivo temporário
+          if (file.existsSync()) {
+            file.deleteSync();
+          }
+        }
       });
     });
   });
