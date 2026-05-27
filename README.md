@@ -1,49 +1,65 @@
-A server app built using [Shelf](https://pub.dev/packages/shelf),
-configured to enable running with [Docker](https://www.docker.com/).
+# Quiz API
 
-This sample code handles HTTP GET requests to `/` and `/echo/<message>`
+API de quiz desenvolvida com [Shelf](https://pub.dev/packages/shelf),
+[Shelf Router](https://pub.dev/packages/shelf_router) e
+[Shelf Router Generator](https://pub.dev/packages/shelf_router_generator).
+Inclui uma UI estática servida em `web/` e suporta execução via
+[Docker](https://www.docker.com/).
 
-# Running the sample
+A API está disponível em duas versões:
 
-## Running with the Dart SDK
+- **V1** — `GET/POST /api/v1/questions/*` — perguntas abertas (texto livre)
+- **V2** — `GET/POST /api/v2/questions/*`, `GET /api/v2/quiz/result` — múltipla escolha com pontuação
 
-You can run the example with the [Dart SDK](https://dart.dev/get-dart)
-like this:
+## Executando com o Dart SDK
 
-```
-$ dart run bin/server.dart
-Server listening on port 8080
-```
+Certifique-se de ter o [Dart SDK](https://dart.dev/get-dart) instalado.
 
-And then from a second terminal:
-```
-$ curl http://0.0.0.0:8080
-Hello, World!
-$ curl http://0.0.0.0:8080/echo/I_love_Dart
-I_love_Dart
-```
+```bash
+# Instalar dependências e gerar código
+dart pub get
+dart run build_runner build --delete-conflicting-outputs
 
-## Running with Docker
-
-If you have [Docker Desktop](https://www.docker.com/get-started) installed, you
-can build and run with the `docker` command:
-
-```
-$ docker build . -t myserver
-$ docker run -it -p 8080:8080 myserver
-Server listening on port 8080
+# Iniciar o servidor (porta 5469)
+dart run bin/quiz_api.dart
 ```
 
-And then from a second terminal:
-```
-$ curl http://0.0.0.0:8080
-Hello, World!
-$ curl http://0.0.0.0:8080/echo/I_love_Dart
-I_love_Dart
+O servidor ficará disponível em `http://localhost:5469`.
+
+## Executando com Docker
+
+```bash
+docker build . -t quiz-api
+docker run -it -p 5469:5469 quiz-api
 ```
 
-You should see the logging printed in the first terminal:
+> **Atenção:** o `Dockerfile` atual expõe a porta 8080 e referencia `bin/server.dart`,
+> o que diverge do entry point real (`bin/quiz_api.dart`, porta 5469).
+> Corrija o Dockerfile antes de usar em produção.
+
+## Comandos úteis
+
+```bash
+# Rodar todos os testes
+dart test
+
+# Análise estática
+dart analyze
+
+# Geração de código (após alterar DTOs ou rotas anotadas)
+dart run build_runner build --delete-conflicting-outputs
 ```
-2021-05-06T15:47:04.620417  0:00:00.000158 GET     [200] /
-2021-05-06T15:47:08.392928  0:00:00.001216 GET     [200] /echo/I_love_Dart
-```
+
+## Estrutura
+
+| Camada | Localização |
+| --- | --- |
+| Entry point | `bin/quiz_api.dart` |
+| Roteamento | `lib/src/routes/`, `lib/src/modules/` |
+| Controllers | `lib/src/controller/` |
+| Serviços | `lib/src/service/` |
+| Modelos | `lib/src/model/` |
+| Dados mock V1 | `lib/src/data/` |
+| Dados JSON V2 | `lib/data/v2/` |
+
+Para a documentação completa da API V2, consulte [API_V2.md](API_V2.md).

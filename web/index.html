@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz · Neon Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="glow glow-c"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" />
+          <polygon points="16,8 24,12 24,20 16,24 8,20 8,12" />
+        </svg>
+      </div>
+      <div>
+        <h1>QUIZ<span>::</span>NEON</h1>
+        <small>v2 · neural quiz engine</small>
+      </div>
+    </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
+      <span class="dot"></span>
+      <span class="label">DARK</span>
+    </button>
+  </header>
+
+  <main class="app">
+    <!-- LOGIN / SETUP -->
+    <section id="setupCard" class="card setup">
+      <div class="card-header">
+        <span class="tag">// IDENTIFICAÇÃO</span>
+        <h2>Inicializar Sessão</h2>
+      </div>
+
+      <label class="field">
+        <span>E-mail do jogador</span>
+        <input id="userEmail" type="email" placeholder="player@neon.io" autocomplete="email" />
+      </label>
+
+      <label class="field">
+        <span>Categoria</span>
+        <div class="chips" id="categoryChips">
+          <button data-cat="generalKnowledge" class="chip active">Conhecimento Geral</button>
+          <button data-cat="geography" class="chip">Geografia</button>
+          <button data-cat="historyFashion" class="chip">História &amp; Moda</button>
+          <button data-cat="popCultureMusic" class="chip">Pop &amp; Música</button>
+        </div>
+      </label>
+
+      <label class="switch-field">
+        <span>
+          <b>Modo mistério</b>
+          <small>Esconde se você acertou ou errou cada resposta — só revela no final.</small>
+        </span>
+        <input type="checkbox" id="mysteryToggle" />
+        <span class="switch"></span>
+      </label>
+
+      <button id="startBtn" class="primary-btn">
+        <span>INICIAR QUIZ</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </button>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quizCard" class="card quiz hidden">
+      <div class="card-header">
+        <span class="tag" id="categoryTag">// CATEGORIA</span>
+        <div class="score-strip">
+          <div class="metric"><b id="mScore">0</b><small>SCORE</small></div>
+          <div class="metric"><b id="mCorrect">0</b><small>OK</small></div>
+          <div class="metric wrong"><b id="mWrong">0</b><small>X</small></div>
+          <div class="metric"><b id="mTotal">0</b><small>TOTAL</small></div>
+        </div>
+      </div>
+
+      <div class="question-panel">
+        <div class="pts-badge"><span id="qPoints">10</span> pts</div>
+        <p id="qText" class="q-text">…</p>
+      </div>
+
+      <div id="optionsGrid" class="options-grid"></div>
+
+      <div class="row">
+        <button id="nextBtn" class="primary-btn hidden">
+          <span>PRÓXIMA</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+        <button id="finishBtn" class="ghost-btn">FINALIZAR</button>
+      </div>
+
+      <div id="feedback" class="feedback hidden"></div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="resultCard" class="card result hidden">
+      <div class="card-header">
+        <span class="tag">// RELATÓRIO FINAL</span>
+        <h2>Sessão Concluída</h2>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-cell big">
+          <b id="rScore">0</b>
+          <small>PONTUAÇÃO TOTAL</small>
+        </div>
+        <div class="result-cell">
+          <b id="rCorrect">0</b>
+          <small>ACERTOS</small>
+        </div>
+        <div class="result-cell">
+          <b id="rWrong">0</b>
+          <small>ERROS</small>
+        </div>
+        <div class="result-cell">
+          <b id="rTotal">0</b>
+          <small>RESPONDIDAS</small>
+        </div>
+      </div>
+
+      <button id="restartBtn" class="primary-btn">
+        <span>NOVA SESSÃO</span>
+        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" /></svg>
+      </button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>API · /api/v2 · shelf</span>
+    <span id="statusDot" class="status">● online</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
